@@ -1,0 +1,8 @@
+.postbox .group {
+  display: block;
+  overflow: hidden;
+}
+.postbox .group > p {
+  float: left;
+	margin-right: 20px;
+}
