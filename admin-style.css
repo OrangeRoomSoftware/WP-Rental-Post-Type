@@ -1,8 +1,6 @@
-.postbox .group {
-  display: block;
-  overflow: hidden;
-}
-.postbox .group > p {
-  float: left;
-	margin-right: 20px;
-}
+#rental_meta p { line-height:18pt; font-size:11pt; }
+#rental_meta .group { display:block; overflow:hidden; }
+#rental_meta .group > p { float:left; margin-right:40px; }
+#rental_meta ul.bundle  { display:block; clear:both; overflow:hidden; }
+#rental_meta ul.bundle li { display:inline-block;width:150px;float:left; }
+#rental_meta .numeric { text-align:right; }
