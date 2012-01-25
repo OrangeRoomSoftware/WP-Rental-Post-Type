@@ -88,26 +88,34 @@ function add_custom_rental_meta_boxes() {
 function custom_rental_meta_boxes() {
   global $post;
   $custom_data = get_post_custom($post->ID);
+  $features = explode('|', $custom_data['features'][0]); sort($features);
+  $options = explode('|', $custom_data['options'][0]); sort($options);
   ?>
-  <p>
-    Availability Status:<br>
-    <input type="radio" name="rental_meta[available]" value="Available Now" <?php echo ($custom_data['available'][0] == 'Available Now') ? 'checked' : ''; ?>>
-    <label>Available Now</label>
+  <div class="group">
+    <p>
+      Availability Status:<br>
+      <input type="radio" name="rental_meta[available]" value="Available Now" <?php echo ($custom_data['available'][0] == 'Available Now') ? 'checked' : ''; ?>>
+      <label>Available Now</label>
 
-    <input type="radio" name="rental_meta[available]" value="Coming Soon" <?php echo ($custom_data['available'][0] == 'Coming Soon') ? 'checked' : ''; ?>>
-    <label>Coming Soon</label>
-  </p>
-  <p>
-    Property Type:<br>
-    <input type="radio" name="rental_meta[property_type]" value="Home" <?php echo ($custom_data['property_type'][0] == 'Home') ? 'checked' : ''; ?>>
-    <label>Home</label>
-    <input type="radio" name="rental_meta[property_type]" value="Apartment" <?php echo ($custom_data['property_type'][0] == 'Apartment') ? 'checked' : ''; ?>>
-    <label>Apartment</label>
-  </p>
+      <input type="radio" name="rental_meta[available]" value="Coming Soon" <?php echo ($custom_data['available'][0] == 'Coming Soon') ? 'checked' : ''; ?>>
+      <label>Coming Soon</label>
+    </p>
+    <p>
+      Property Type:<br>
+      <input type="radio" name="rental_meta[property_type]" value="Home" <?php echo ($custom_data['property_type'][0] == 'Home') ? 'checked' : ''; ?>>
+      <label>Home</label>
+      <input type="radio" name="rental_meta[property_type]" value="Apartment" <?php echo ($custom_data['property_type'][0] == 'Apartment') ? 'checked' : ''; ?>>
+      <label>Apartment</label>
+      <input type="radio" name="rental_meta[property_type]" value="Condominium" <?php echo ($custom_data['property_type'][0] == 'Condominium') ? 'checked' : ''; ?>>
+      <label>Condominium</label>
+    </p>
+  </div>
+
   <p>
     Rental Price:<br>
-    <input type="text" name="rental_meta[price]" value="<?php echo $custom_data['price'][0]; ?>" size="10">
+    $<input type="text" name="rental_meta[price]" value="<?php echo $custom_data['price'][0]; ?>" size="4">
   </p>
+
   <p>
     <label>Street:</label><br>
     <input name="rental_meta[street]" value="<?php echo $custom_data['street'][0]; ?>" size="60">
@@ -130,33 +138,44 @@ function custom_rental_meta_boxes() {
   <div class="group">
     <p>
       Home Size:<br>
-      <input type="text" name="rental_meta[home_size]" value="<?php echo $custom_data['home_size'][0]; ?>" size="10">
+      <input type="text" name="rental_meta[home_size]" value="<?php echo $custom_data['home_size'][0]; ?>" size="4" class="numeric">sq ft
     </p>
     <p>
       Lot Size:<br>
-      <input type="text" name="rental_meta[lot_size]" value="<?php echo $custom_data['lot_size'][0]; ?>" size="10">
+      <input type="text" name="rental_meta[lot_size]" value="<?php echo $custom_data['lot_size'][0]; ?>" size="4" class="numeric">sq ft
     </p>
-  </div>
-
-  <div class="group">
     <p>
       Bedrooms:<br>
-      <input type="text" name="rental_meta[bedrooms]" value="<?php echo $custom_data['bedrooms'][0]; ?>" size="4">
+      <input type="text" name="rental_meta[bedrooms]" value="<?php echo $custom_data['bedrooms'][0]; ?>" size="2" class="numeric">
     </p>
     <p>
       Bathrooms:<br>
-      <input type="text" name="rental_meta[bathrooms]" value="<?php echo $custom_data['bathrooms'][0]; ?>" size="4">
+      <input type="text" name="rental_meta[bathrooms]" value="<?php echo $custom_data['bathrooms'][0]; ?>" size="2" class="numeric">
     </p>
   </div>
 
   <p>
     Features:<br>
-    <input type="text" name="rental_meta[features]" value="<?php echo $custom_data['features'][0]; ?>" size="20"> Add New
+    <input type="hidden" name="rental_meta[features]" value="<?php echo $custom_data['features'][0]; ?>">
+    <ul id="features" class="bundle">
+      <?php foreach ( $features as $value ) { if (empty($value)) continue; ?>
+      <li><input type="checkbox" value="<?php echo $value; ?>" checked> <?php echo $value; ?></li>
+      <?php } ?>
+    </ul>
+    <input type="text" id="add-feature-text" name="add-feature" value="" size="20">
+    <input type="button" id="add-feature-button" value="Add">
   </p>
 
   <p>
     Options:<br>
-    <input type="text" name="rental_meta[options]" value="<?php echo $custom_data['options'][0]; ?>" size="20"> Add New
+    <input type="hidden" name="rental_meta[options]" value="<?php echo $custom_data['options'][0]; ?>">
+    <ul id="options" class="bundle">
+      <?php foreach ( $options as $value ) { if (empty($value)) continue; ?>
+      <li><input type="checkbox" value="<?php echo $value; ?>" checked> <?php echo $value; ?></li>
+      <?php } ?>
+    </ul>
+    <input type="text" id="add-option-text" name="add-option" value="" size="20">
+    <input type="button" id="add-option-button" value="Add">
   </p>
 
   <?php
@@ -233,10 +252,6 @@ function rental_title_filter($content) {
   $output .= '<span class="title">' . $content . '</span>';
   $output .= '<span class="property-type">' . $custom['property_type'] . '</span>';
 
-  if ( $custom['available'] ) {
-    $output .= "<span class='availability " . preg_replace('/\-{2}+/','',preg_replace('/[^A-Za-z0-9]/','-',strtolower(strip_tags($custom['available'])))) . "'>" . ucwords($custom['available']) . "</span>";
-  }
-
   return $output;
 }
 
@@ -247,10 +262,14 @@ function rental_excerpt_filter($content) {
   foreach ( get_post_custom() as $key => $value ) {
     $custom[$key] = $value[0];
   }
-
   $address = $custom['street'] . ", " . $custom['city'] . ", " . $custom['state'] . "  " . $custom['zip'];
 
   $output  = '';
+
+  if ( $custom['available'] ) {
+    $output .= "<div class='availability burst-8 " . preg_replace('/\-{2}+/','',preg_replace('/[^A-Za-z0-9]/','-',strtolower(strip_tags($custom['available'])))) . "'>" . ucwords($custom['available']) . "</div>";
+  }
+
   $output .= "<ul class='meta'>";
   $output .= "  <li>Address: " . $address . '</li>';
   $output .= "</ul>";
@@ -271,20 +290,41 @@ function rental_content_filter($content) {
   }
 
   $address = $custom['street'] . ", " . $custom['city'] . ", " . $custom['state'] . "  " . $custom['zip'];
+  $features = explode('|', $custom['features']); sort($features);
+  $options = explode('|', $custom['options']); sort($options);
 
-  $output  = $content;
+  $output  = "[slideshow]<br/>" . $content;
 
   $output .= "<ul class='meta'>";
   $output .= "  <li>Address: " . $address . '</li>';
-  $output .= "  <li>Bedrooms: " . $custom['bedrooms'] . '</li>';
-  $output .= "  <li>Bathrooms: " . $custom['bathrooms'] . '</li>';
+  $output .= "  <li>" . $custom['bedrooms'] . ' Bedrooms ';
+  $output .= "  " . $custom['bathrooms'] . ' Bath</li>';
   $output .= "</ul>";
 
-  $output .= '<ul class="features">';
-  $output .= '</ul>';
+  if ( is_array($features) and !empty($features[0]) ) {
+    $output .= "<div class='features'>";
+    $output .= "Features:<br>";
+    $output .= '<ul>';
+    foreach ( $features as $value ) {
+      $output .= '  <li>' . $value . '</li>';
+    }
+    $output .= '</ul></div>';
+  }
 
-  $output .= '<ul class="options">';
-  $output .= '</ul>';
+  if ( is_array($options) and !empty($options[0]) ) {
+    $output .= "<div class='options'>";
+    $output .= "Options:<br>";
+    $output .= '<ul>';
+    foreach ( $options as $value ) {
+      $output .= '  <li>' . $value . '</li>';
+    }
+    $output .= '</ul></div>';
+  }
+
+  $output .= '<div id="inquiry-form">';
+  $output .= '<h2>Send Email Inquiry</h2>';
+  $output .= '[contact-form-7 id="94" title="Property Inquiry"]';
+  $output .= '</div>';
 
   return $output;
 }

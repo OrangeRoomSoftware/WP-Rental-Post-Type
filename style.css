@@ -1,15 +1,21 @@
-.blog .rental { border:solid 1px #333; border-radius:5px; overflow:hidden; margin-bottom:5px; }
+.blog .rental { border:solid 1px #333; border-radius:6px; overflow:hidden; margin-bottom:5px; }
 
-.rental header { border-bottom: solid 1px #333; padding: 5px; background:#eee; }
+.rental header { border-bottom: solid 1px #333; padding: 0px; background:#eee; }
 .rental header h2, .rental header h2 a { color: black; }
 .rental header time { display: none; }
 .rental img { float:left; margin:0 5px 10px 10px; }
-.rental .price { display:inline-block; color:#900; padding-right:15px; }
-.rental .title { display:inline-block; padding-right:15px; }
-.rental .property-type { display:inline-block; padding-right:15px; }
-.rental .availability { display:inline-block; padding-right:15px; }
-.rental .p { margin: 0; line-height: 12pt; }
+.rental .price { display:inline-block; min-width:133px; color:white; background:#900; padding:5px 15px; }
+.rental .title { display:inline-block; padding:5px 15px; }
+.rental .property-type { display:inline-block; padding:5px 15px; float:right; }
+.rental .availability.available-now { display:none; }
+.rental .availability.coming-soon { position:relative; float:right; border:solid 2px #f00; background:rgba(230,0,0,0.5); border-radius:100px 0px 0px 100px; width:70px; height:45px; z-index:3; padding:10px 10px; margin:0px 5px 0px; text-align:center; }
+.rental .p { line-height: 12pt; }
 .rental .p label { display:inline-block; width:120px; margin-right:5px; text-align:right; font-weight:bold; }
 
-.single .rental header { border: solid 1px black; border-radius:5px; padding: 5px; background:#eee; }
-
+.single .rental header { margin-top:15px; border: solid 1px black; border-radius:6px; background:#eee; }
+.single .rental .features ul,
+.single .rental .options ul  { display:block; clear:both; overflow:hidden; }
+.single .rental .features li,
+.single .rental .options li { width:140px;float:left; }
+.single .rental #inquiry-form { margin:20px 0; border:solid 1px #333; border-radius:4px 4px 0 0; padding: 10px; }
+.single .rental #inquiry-form h2 { border-bottom:solid 1px #333; border-radius:4px 4px 0 0; color:black; background:#eee; padding:5px; margin:-10px -10px 5px -10px; }
