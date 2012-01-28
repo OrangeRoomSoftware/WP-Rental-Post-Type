@@ -7,6 +7,8 @@ Author: <a href="http://www.orangeroomsoftware.com/">Orange Room Software</a>
 Description: A post type for Rentals
 */
 
+define(RENTAL_PLUGIN_DIR, '/wp-content/plugins/' . basename(dirname(__FILE__)) );
+
 # Post Thumbnails
 add_theme_support( ‘post-thumbnails’ );
 
@@ -20,13 +22,20 @@ add_filter( 'widget_text', 'do_shortcode' );
 # Site Stylesheet
 add_action('wp_print_styles', 'ors_rental_template_stylesheets', 6);
 function ors_rental_template_stylesheets() {
-  wp_enqueue_style('rental-template-style', '/wp-content/plugins/'.basename(dirname(__FILE__)).'/style.css', 'ors-rental', null, 'all');
+  wp_enqueue_style('rental-template-style', RENTAL_PLUGIN_DIR . "/style.css", 'ors-rental', null, 'all');
 }
 
 # Admin Stylesheet
 add_action('admin_print_styles', 'ors_admin_stylesheets', 6);
 function ors_admin_stylesheets() {
-  wp_enqueue_style('rental-admin-style', '/wp-content/plugins/'.basename(dirname(__FILE__)).'/admin-style.css', 'ors-admin', null, 'all');
+  wp_enqueue_style('rental-admin-style', RENTAL_PLUGIN_DIR . "/admin-style.css", 'ors-admin', null, 'all');
+}
+
+# Admin Javascript
+add_action('admin_print_scripts', 'ors_rental_plugin_admin_script', 5);
+function ors_rental_plugin_admin_script() {
+  wp_register_script( 'ors_rental_plugin_admin_script', RENTAL_PLUGIN_DIR . "/admin-script.js", 'jquery', time() );
+  wp_enqueue_script('ors_rental_plugin_admin_script');
 }
 
 /*
