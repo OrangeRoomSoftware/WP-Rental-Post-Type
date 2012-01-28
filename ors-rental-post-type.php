@@ -165,10 +165,10 @@ function custom_rental_meta_boxes() {
 
   <p>
     Features:<br>
-    <input type="hidden" name="rental_meta[features]" value="<?php echo $custom_data['features'][0]; ?>">
+    <input type="hidden" id="features-data" name="rental_meta[features]" value="<?php echo $custom_data['features'][0]; ?>">
     <ul id="features" class="bundle">
       <?php foreach ( $features as $value ) { if (empty($value)) continue; ?>
-      <li><input type="checkbox" value="<?php echo $value; ?>" checked> <?php echo $value; ?></li>
+      <li><input type="checkbox" value="<?php echo $value; ?>" checked="checked"> <?php echo $value; ?></li>
       <?php } ?>
     </ul>
     <input type="text" id="add-feature-text" name="add-feature" value="" size="20">
@@ -177,10 +177,10 @@ function custom_rental_meta_boxes() {
 
   <p>
     Options:<br>
-    <input type="hidden" name="rental_meta[options]" value="<?php echo $custom_data['options'][0]; ?>">
+    <input type="hidden" id="options-data" name="rental_meta[options]" value="<?php echo $custom_data['options'][0]; ?>">
     <ul id="options" class="bundle">
       <?php foreach ( $options as $value ) { if (empty($value)) continue; ?>
-      <li><input type="checkbox" value="<?php echo $value; ?>" checked> <?php echo $value; ?></li>
+      <li><input type="checkbox" value="<?php echo $value; ?>" checked="checked"> <?php echo $value; ?></li>
       <?php } ?>
     </ul>
     <input type="text" id="add-option-text" name="add-option" value="" size="20">
