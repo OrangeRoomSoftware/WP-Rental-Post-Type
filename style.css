@@ -17,6 +17,6 @@
 .single .rental .features ul,
 .single .rental .options ul  { display:block; clear:both; overflow:hidden; }
 .single .rental .features li,
-.single .rental .options li { width:140px;float:left; }
+.single .rental .options li { width:160px;float:left; }
 .single .rental #inquiry-form { margin:20px 0; border:solid 1px #333; border-radius:4px 4px 0 0; padding: 10px; }
 .single .rental #inquiry-form h2 { border-bottom:solid 1px #333; border-radius:4px 4px 0 0; color:black; background:#eee; padding:5px; margin:-10px -10px 5px -10px; }
