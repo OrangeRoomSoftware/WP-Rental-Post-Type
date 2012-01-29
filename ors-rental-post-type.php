@@ -50,6 +50,9 @@ function activate_rental_post_type() {
 # Custom post type
 add_action( 'init', 'create_rental_post_type' );
 function create_rental_post_type() {
+  add_option( 'ors-global-features', 'hello', '', true );
+  add_option( 'ors-global-options', 'hello', '', true );
+
   $labels = array(
     'name' => _x('Rentals', 'post type general name'),
     'singular_name' => _x('Rental', 'post type singular name'),
@@ -97,8 +100,15 @@ function add_custom_rental_meta_boxes() {
 function custom_rental_meta_boxes() {
   global $post;
   $custom_data = get_post_custom($post->ID);
-  $features = explode('|', $custom_data['features'][0]); sort($features);
-  $options = explode('|', $custom_data['options'][0]); sort($options);
+
+  $features = array_filter(explode('|', $custom_data['features'][0]), 'strlen');
+  sort($features);
+  $options = array_filter(explode('|', $custom_data['options'][0]), 'strlen');
+  sort($options);
+
+  $global_features = explode('|', get_option('ors-global-features'));
+  $global_options = explode('|', get_option('ors-global-options'));
+
   ?>
   <div class="group">
     <p>
@@ -165,10 +175,10 @@ function custom_rental_meta_boxes() {
 
   <p>
     Features:<br>
-    <input type="hidden" id="features-data" name="rental_meta[features]" value="<?php echo $custom_data['features'][0]; ?>">
+    <input type="hidden" id="features-data" name="rental_meta[features]" value="<?php echo implode('|', $features); ?>">
     <ul id="features" class="bundle">
-      <?php foreach ( $features as $value ) { if (empty($value)) continue; ?>
-      <li><input type="checkbox" value="<?php echo $value; ?>" checked="checked"> <?php echo $value; ?></li>
+      <?php foreach ( $global_features as $value ) { if (empty($value)) continue; ?>
+      <li><input type="checkbox" value="<?php echo $value; ?>" <?php echo in_array($value, $features) ? 'checked="checked"' : ''; ?>> <?php echo $value; ?></li>
       <?php } ?>
     </ul>
     <input type="text" id="add-feature-text" name="add-feature" value="" size="20">
@@ -179,8 +189,8 @@ function custom_rental_meta_boxes() {
     Options:<br>
     <input type="hidden" id="options-data" name="rental_meta[options]" value="<?php echo $custom_data['options'][0]; ?>">
     <ul id="options" class="bundle">
-      <?php foreach ( $options as $value ) { if (empty($value)) continue; ?>
-      <li><input type="checkbox" value="<?php echo $value; ?>" checked="checked"> <?php echo $value; ?></li>
+      <?php foreach ( $global_options as $value ) { if (empty($value)) continue; ?>
+      <li><input type="checkbox" value="<?php echo $value; ?>" <?php echo in_array($value, $options) ? 'checked="checked"' : ''; ?>> <?php echo $value; ?></li>
       <?php } ?>
     </ul>
     <input type="text" id="add-option-text" name="add-option" value="" size="20">
@@ -204,11 +214,21 @@ function save_rental_postdata( $post_id ) {
       return;
   }
 
-  $data = $_POST['rental_meta'];
-
-  foreach ($data as $key=>$value) {
+  // Page Meta
+  $custom_data = $_POST['rental_meta'];
+  foreach ($custom_data as $key=>$value) {
     update_post_meta($post_id, $key, $value);
   }
+
+  // Global Features and Options
+  $features = explode('|', $custom_data['features']); sort($features);
+  $options = explode('|', $custom_data['options']); sort($options);
+  $global_features = explode('|', get_option('ors-global-features'));
+  $global_options = explode('|', get_option('ors-global-options'));
+  $global_features = array_unique(array_merge($global_features, $features));
+  $global_options = array_unique(array_merge($global_options, $options));
+  update_option('ors-global-features', implode('|', $global_features));
+  update_option('ors-global-options', implode('|', $global_options));
 }
 
 add_filter("manage_edit-rental_columns", "rental_edit_columns");
