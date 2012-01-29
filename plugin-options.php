@@ -24,10 +24,12 @@ function rental_options_do_page() {
 		}
 		if ($_POST['global-features']) {
 			update_option('ors-global-features', trim($_POST['global-features']));
+			update_option('ors-rental-global-features', trim($_POST['global-features']));
 			$updated = true;
 		}
 		if ($_POST['global-options']) {
 			update_option('ors-global-options', trim($_POST['global-options']));
+			update_option('ors-rental-global-options', trim($_POST['global-options']));
 			$updated = true;
 		}
 	}
@@ -53,10 +55,12 @@ function rental_options_do_page() {
 				<tr valign="top">
 					<th scope="row">Features</th>
 					<td><textarea name="global-features" cols=80 rows=5><?php echo get_option('ors-global-features'); ?></textarea></td>
+					<td><textarea name="global-features" cols=80 rows=5><?php echo get_option('ors-rental-global-features'); ?></textarea></td>
 				</tr>
 				<tr valign="top">
 					<th scope="row">Options</th>
 					<td><textarea name="global-options" cols=80 rows=5><?php echo get_option('ors-global-options'); ?></textarea></td>
+					<td><textarea name="global-options" cols=80 rows=5><?php echo get_option('ors-rental-global-options'); ?></textarea></td>
 				</tr>
 			</table>
 			<p class="submit">

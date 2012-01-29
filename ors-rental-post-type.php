@@ -51,8 +51,8 @@ register_activation_hook( __FILE__, 'activate_vehicle_post_type' );
 function activate_rental_post_type() {
   create_rental_post_type();
   flush_rewrite_rules();
-  add_option( 'ors-global-features', '2 Car Garage|4 Car Garage|Air Conditioning|Alarm|Assigned Parking|Ceiling Fan|Central Heating|Covered Parking|Den/Office|Dining Area|Dining Room|Dishwasher|Disposal|Enclosed Patios|Evaporative Cooler|Family Room|Fenced Back Yard|Fireplace|Full Kitchen|Game Room|Garage|Generous Closet Areas|Interior Storage|Living Room|Loft|Microwave|Patio|RV Parking|Refrigerator|Separate Dining Room|Spa|Sprinklers|Storage Shed|Stove/Oven|Swimming Pool|Utility Room|Washer/Dryer|Washer/Dryer Hookup|Central Vac', '', true );
-  add_option( 'ors-global-options', 'Pool Service|Pest Control Service|Yard Service|Sewer and Trash|Playground|Small Pets Considered|Tennis Court|Garbage Pickup|Satellite TV|Water', '', true );
+  add_option( 'ors-rental-global-features', '2 Car Garage|4 Car Garage|Air Conditioning|Alarm|Assigned Parking|Ceiling Fan|Central Heating|Covered Parking|Den/Office|Dining Area|Dining Room|Dishwasher|Disposal|Enclosed Patios|Evaporative Cooler|Family Room|Fenced Back Yard|Fireplace|Full Kitchen|Game Room|Garage|Generous Closet Areas|Interior Storage|Living Room|Loft|Microwave|Patio|RV Parking|Refrigerator|Separate Dining Room|Spa|Sprinklers|Storage Shed|Stove/Oven|Swimming Pool|Utility Room|Washer/Dryer|Washer/Dryer Hookup|Central Vac', '', true );
+  add_option( 'ors-rental-global-options', 'Pool Service|Pest Control Service|Yard Service|Sewer and Trash|Playground|Small Pets Considered|Tennis Court|Garbage Pickup|Satellite TV|Water', '', true );
 }
 
 # Custom post type
@@ -112,8 +112,8 @@ function custom_rental_meta_boxes() {
   $options = array_filter(explode('|', $custom_data['options'][0]), 'strlen');
   sort($options);
 
-  $global_features = explode('|', get_option('ors-global-features'));
-  $global_options = explode('|', get_option('ors-global-options'));
+  $global_features = explode('|', get_option('ors-rental-global-features'));
+  $global_options = explode('|', get_option('ors-rental-global-options'));
 
   ?>
   <div class="group">
@@ -229,14 +229,14 @@ function save_rental_postdata( $post_id ) {
   // Global Features and Options
   $features = explode('|', $custom_data['features']); sort($features);
   $options = explode('|', $custom_data['options']); sort($options);
-  $global_features = explode('|', get_option('ors-global-features'));
-  $global_options = explode('|', get_option('ors-global-options'));
+  $global_features = explode('|', get_option('ors-rental-global-features'));
+  $global_options = explode('|', get_option('ors-rental-global-options'));
   $global_features = array_filter(array_unique(array_merge($global_features, $features)), 'strlen');
   $global_options = array_filter(array_unique(array_merge($global_options, $options)), 'strlen');
   sort($global_features);
   sort($global_options);
-  update_option('ors-global-features', implode('|', $global_features));
-  update_option('ors-global-options', implode('|', $global_options));
+  update_option('ors-rental-global-features', implode('|', $global_features));
+  update_option('ors-rental-global-options', implode('|', $global_options));
 }
 
 add_filter("manage_edit-rental_columns", "rental_edit_columns");
