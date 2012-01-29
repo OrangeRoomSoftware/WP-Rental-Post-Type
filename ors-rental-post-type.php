@@ -224,8 +224,8 @@ function save_rental_postdata( $post_id ) {
   $options = explode('|', $custom_data['options']); sort($options);
   $global_features = explode('|', get_option('ors-global-features'));
   $global_options = explode('|', get_option('ors-global-options'));
-  $global_features = array_unique(array_merge($global_features, $features));
-  $global_options = array_unique(array_merge($global_options, $options));
+  $global_features = array_filter(array_unique(array_merge($global_features, $features)), 'strlen');
+  $global_options = array_filter(array_unique(array_merge($global_options, $options)), 'strlen');
   sort($global_features);
   sort($global_options);
   update_option('ors-global-features', implode('|', $global_features));
@@ -320,11 +320,11 @@ function rental_content_filter($content) {
   }
 
   $address = $custom['street'] . ", " . $custom['city'] . ", " . $custom['state'] . "  " . $custom['zip'];
-  $features = explode('|', $custom['features']); sort($features);
-  $options = explode('|', $custom['options']); sort($options);
+
+  $features = array_filter(explode('|', $custom['features']), 'strlen');
+  $options = array_filter(explode('|', $custom['options']), 'strlen');
 
   $output  = "[slideshow]<br/>" . $content;
-
   $output .= "<ul class='meta'>";
   $output .= "  <li>Address: " . $address . '</li>';
   $output .= "  <li>" . $custom['bedrooms'] . ' Bedrooms ';
@@ -341,7 +341,7 @@ function rental_content_filter($content) {
     $output .= '</ul></div>';
   }
 
-  if ( is_array($options) and !empty($options[0]) ) {
+  if ( is_array($options) ) {
     $output .= "<div class='options'>";
     $output .= "Options:<br>";
     $output .= '<ul>';
