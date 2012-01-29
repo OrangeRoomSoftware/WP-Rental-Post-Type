@@ -7,7 +7,13 @@ Author: <a href="http://www.orangeroomsoftware.com/">Orange Room Software</a>
 Description: A post type for Rentals
 */
 
-define(RENTAL_PLUGIN_DIR, '/wp-content/plugins/' . basename(dirname(__FILE__)) );
+define('RENTAL_PLUGIN_URL', '/wp-content/plugins/' . basename(dirname(__FILE__)) );
+define('RENTAL_PLUGIN_DIR', dirname(__FILE__));
+
+/**
+ * Theme Admin Options
+ */
+require_once ( RENTAL_PLUGIN_DIR . '/plugin-options.php' );
 
 # Post Thumbnails
 add_theme_support( ‘post-thumbnails’ );
@@ -22,19 +28,19 @@ add_filter( 'widget_text', 'do_shortcode' );
 # Site Stylesheet
 add_action('wp_print_styles', 'ors_rental_template_stylesheets', 6);
 function ors_rental_template_stylesheets() {
-  wp_enqueue_style('rental-template-style', RENTAL_PLUGIN_DIR . "/style.css", 'ors-rental', null, 'all');
+  wp_enqueue_style('rental-template-style', RENTAL_PLUGIN_URL . "/style.css", 'ors-rental', null, 'all');
 }
 
 # Admin Stylesheet
 add_action('admin_print_styles', 'ors_admin_stylesheets', 6);
 function ors_admin_stylesheets() {
-  wp_enqueue_style('rental-admin-style', RENTAL_PLUGIN_DIR . "/admin-style.css", 'ors-admin', null, 'all');
+  wp_enqueue_style('rental-admin-style', RENTAL_PLUGIN_URL . "/admin-style.css", 'ors-admin', null, 'all');
 }
 
 # Admin Javascript
 add_action('admin_print_scripts', 'ors_rental_plugin_admin_script', 5);
 function ors_rental_plugin_admin_script() {
-  wp_register_script( 'ors_rental_plugin_admin_script', RENTAL_PLUGIN_DIR . "/admin-script.js", 'jquery', time() );
+  wp_register_script( 'ors_rental_plugin_admin_script', RENTAL_PLUGIN_URL . "/admin-script.js", 'jquery', time() );
   wp_enqueue_script('ors_rental_plugin_admin_script');
 }
 
@@ -79,7 +85,7 @@ function create_rental_post_type() {
     'hierarchical' => false,
     'menu_position' => 6,
     'supports' => array('title', 'location', 'gallery', 'thumbnail', 'editor', 'tags'),
-    'menu_icon' => '/wp-content/plugins/'.basename(dirname(__FILE__)).'/icon.png',
+    'menu_icon' => RENTAL_PLUGIN_URL . '/icon.png',
     'rewrite' => array(
       'slug' => 'rentals',
       'with_front' => false
@@ -89,8 +95,9 @@ function create_rental_post_type() {
   register_post_type( 'rental', $args );
 }
 
-$custom_rental_fields = array('Available', 'City', 'State', 'ZIP');
-
+/**
+ * Meta Box for Editor
+ */
 add_action( 'add_meta_boxes', 'add_custom_rental_meta_boxes' );
 function add_custom_rental_meta_boxes() {
   add_meta_box("rental_meta", 'Rental Information', "custom_rental_meta_boxes", "rental", "normal", "high");
@@ -351,10 +358,19 @@ function rental_content_filter($content) {
     $output .= '</ul></div>';
   }
 
-  $output .= '<div id="inquiry-form">';
-  $output .= '<h2>Send Email Inquiry</h2>';
-  $output .= '[contact-form-7 id="94" title="Property Inquiry"]';
-  $output .= '</div>';
+  if ( $inquiry = get_option('ors-inquiry-form') ) {
+    $output .= '<div class="inquiry-form">';
+    $output .= '<h2>Send Email Inquiry</h2>';
+    $output .= $inquiry;
+    $output .= '</div>';
+  }
+
+  if ( $tell_a_friend = get_option('ors-tell-a-friend-form') ) {
+    $output .= '<div class="inquiry-form">';
+    $output .= '<h2>Tell-A-Friend</h2>';
+    $output .= $tell_a_friend;
+    $output .= '</div>';
+  }
 
   return $output;
 }
