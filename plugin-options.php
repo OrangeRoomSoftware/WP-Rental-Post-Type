@@ -15,19 +15,19 @@ function rental_options_do_page() {
 
 	if ($_POST) {
 		if ($_POST['inquiry-form']) {
-			update_option('ors-inquiry-form', stripslashes($_POST['inquiry-form']));
+			update_option('ors-inquiry-form', trim(stripslashes($_POST['inquiry-form'])));
 			$updated = true;
 		}
 		if ($_POST['tell-a-friend-form']) {
-			update_option('ors-tell-a-friend-form', stripslashes($_POST['tell-a-friend-form']));
+			update_option('ors-tell-a-friend-form', trim(stripslashes($_POST['tell-a-friend-form'])));
 			$updated = true;
 		}
 		if ($_POST['global-features']) {
-			update_option('ors-global-features', $_POST['global-features']);
+			update_option('ors-global-features', trim($_POST['global-features']));
 			$updated = true;
 		}
 		if ($_POST['global-options']) {
-			update_option('ors-global-options', $_POST['global-options']);
+			update_option('ors-global-options', trim($_POST['global-options']));
 			$updated = true;
 		}
 	}
