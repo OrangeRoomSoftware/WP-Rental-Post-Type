@@ -226,6 +226,8 @@ function save_rental_postdata( $post_id ) {
   $global_options = explode('|', get_option('ors-global-options'));
   $global_features = array_unique(array_merge($global_features, $features));
   $global_options = array_unique(array_merge($global_options, $options));
+  sort($global_features);
+  sort($global_options);
   update_option('ors-global-features', implode('|', $global_features));
   update_option('ors-global-options', implode('|', $global_options));
 }
