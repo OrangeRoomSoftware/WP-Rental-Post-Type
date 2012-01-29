@@ -185,7 +185,7 @@ function custom_rental_meta_boxes() {
   </p>
 
   <p>
-    Options:<br>
+    Optional:<br>
     <input type="hidden" id="options-data" name="rental_meta[options]" value="<?php echo $custom_data['options'][0]; ?>">
     <ul id="options" class="bundle">
       <?php foreach ( $global_options as $value ) { if (empty($value)) continue; ?>
@@ -341,9 +341,9 @@ function rental_content_filter($content) {
     $output .= '</ul></div>';
   }
 
-  if ( is_array($options) ) {
+  if ( is_array($options) and !empty($options[0]) ) {
     $output .= "<div class='options'>";
-    $output .= "Options:<br>";
+    $output .= "Optional:<br>";
     $output .= '<ul>';
     foreach ( $options as $value ) {
       $output .= '  <li>' . $value . '</li>';
