@@ -4,3 +4,5 @@
 #rental_meta ul.bundle  { display:block; clear:both; overflow:hidden; }
 #rental_meta ul.bundle li { display:inline-block;width:150px;float:left; }
 #rental_meta .numeric { text-align:right; }
+
+.wp-list-table #thumbnail { width:70px; }

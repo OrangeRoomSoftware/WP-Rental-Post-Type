@@ -243,6 +243,7 @@ add_filter("manage_edit-rental_columns", "rental_edit_columns");
 function rental_edit_columns($columns){
   $columns = array(
     "cb" => "<input type=\"checkbox\" />",
+    "thumbnail" => "Photo",
     "title" => "Property Title",
     "available" => "Availability",
     "price" => "Price",
@@ -260,6 +261,11 @@ function rental_custom_columns($column){
   $custom = get_post_custom();
 
   switch ($column) {
+    case "thumbnail":
+      if ( has_post_thumbnail( $post->ID ) ) {
+        the_post_thumbnail(array(50,50));
+      }
+      break;
     case "price":
       echo '$' . $custom["price"][0];
       break;
