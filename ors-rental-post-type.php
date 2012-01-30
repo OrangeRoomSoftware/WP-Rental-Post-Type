@@ -247,7 +247,10 @@ function rental_edit_columns($columns){
     "title" => "Property Title",
     "available" => "Availability",
     "price" => "Price",
+    "property_type" => "Type",
+    "bed-bath" => "Bed/Bath",
     "street" => "Street",
+    "city" => "City",
     "author" => "Author",
     "date" => "Date Added"
   );
@@ -272,8 +275,17 @@ function rental_custom_columns($column){
     case "available":
       echo $custom["available"][0];
       break;
+    case "property_type":
+      echo $custom["home_size"][0] . 'sqft ' . $custom["property_type"][0];
+      break;
+    case "bed-bath":
+      echo $custom["bedrooms"][0] . '/' . $custom["bathrooms"][0];
+      break;
     case "street":
       echo $custom["street"][0];
+      break;
+    case "city":
+      echo $custom["city"][0];
       break;
   }
 }
