@@ -127,8 +127,8 @@ function custom_rental_meta_boxes() {
     </p>
     <p>
       Property Type:<br>
-      <input type="radio" name="rental_meta[property_type]" value="Home" <?php echo ($custom_data['property_type'][0] == 'Home') ? 'checked' : ''; ?>>
-      <label>Home</label>
+      <input type="radio" name="rental_meta[property_type]" value="House" <?php echo ($custom_data['property_type'][0] == 'House') ? 'checked' : ''; ?>>
+      <label>House</label>
       <input type="radio" name="rental_meta[property_type]" value="Apartment" <?php echo ($custom_data['property_type'][0] == 'Apartment') ? 'checked' : ''; ?>>
       <label>Apartment</label>
       <input type="radio" name="rental_meta[property_type]" value="Condominium" <?php echo ($custom_data['property_type'][0] == 'Condominium') ? 'checked' : ''; ?>>
