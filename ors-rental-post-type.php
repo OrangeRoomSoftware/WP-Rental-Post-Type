@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Rental Post Type
-Plugin URI: http://www.orangeroomsoftware.com/website-plugin/
+Plugin URI: https://github.com/orangeroomsoftware/WP-Rental-Post-Type
 Version: 1.0
 Author: <a href="http://www.orangeroomsoftware.com/">Orange Room Software</a>
 Description: A post type for Rentals
