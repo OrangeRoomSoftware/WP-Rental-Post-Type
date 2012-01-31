@@ -301,10 +301,13 @@ function rental_title_filter($content) {
     $custom[$key] = $value[0];
   }
 
+  if ( $custom['available'] == 'Coming Soon' ) $visible = false; else $visible = true;
+
   $output = '';
 
   $output .= '<span class="price">$' . $custom['price'] . '/mo</span>';
-  $output .= '<span class="title">' . $content . '</span>';
+  if ( $visible ) $output .= '<span class="title">' . $content . '</span>';
+  else $output .= '<span class="title">Coming Soon</span>';
   $output .= '<span class="property-type">' . $custom['property_type'] . '</span>';
 
   return $output;
@@ -317,6 +320,9 @@ function rental_excerpt_filter($content) {
   foreach ( get_post_custom() as $key => $value ) {
     $custom[$key] = $value[0];
   }
+
+  if ( $custom['available'] == 'Coming Soon' ) $visible = false; else $visible = true;
+
   $address = $custom['street'] . ", " . $custom['city'] . ", " . $custom['state'] . "  " . $custom['zip'];
 
   $output  = '';
@@ -326,7 +332,7 @@ function rental_excerpt_filter($content) {
   }
 
   $output .= "<ul class='meta'>";
-  $output .= "  <li>Address: " . $address . '</li>';
+  if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
   $output .= "</ul>";
 
   $output .= "<p class='excerpt'>";
@@ -344,6 +350,8 @@ function rental_content_filter($content) {
     $custom[$key] = $value[0];
   }
 
+  if ( $custom['available'] == 'Coming Soon' ) $visible = false; else $visible = true;
+
   $address = $custom['street'] . ", " . $custom['city'] . ", " . $custom['state'] . "  " . $custom['zip'];
 
   $features = array_filter(explode('|', $custom['features']), 'strlen');
@@ -351,7 +359,7 @@ function rental_content_filter($content) {
 
   $output  = "[slideshow]<br/>" . $content;
   $output .= "<ul class='meta'>";
-  $output .= "  <li>Address: " . $address . '</li>';
+  if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
   $output .= "  <li>" . $custom['bedrooms'] . ' Bedrooms ';
   $output .= "  " . $custom['bathrooms'] . ' Bath</li>';
   $output .= "</ul>";
