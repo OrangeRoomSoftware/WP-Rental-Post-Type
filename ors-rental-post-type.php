@@ -291,6 +291,21 @@ function rental_custom_columns($column){
 }
 
 /*
+ * Custom Query for this post type to sort by price
+ * Don't use this sort in Admin
+*/
+if ( !is_admin() ) add_filter( 'posts_clauses', 'ors_rental_query' );
+function ors_rental_query($clauses) {
+  if ( !strstr($clauses['where'], 'rental') ) return $clauses;
+  global $wpdb;
+  $clauses['join'] .= " JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id ";
+  $clauses['where'] .= " and {$wpdb->postmeta}.meta_key = 'price'";
+  $clauses['fields'] .= ", {$wpdb->postmeta}.meta_value as price";
+  $clauses['orderby'] = 'CAST(price as decimal) ASC';
+  return $clauses;
+}
+
+/*
  * Fix the content
 */
 add_filter('the_title', 'rental_title_filter');
