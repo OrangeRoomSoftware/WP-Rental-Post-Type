@@ -342,6 +342,10 @@ function rental_excerpt_filter($content) {
 
   $output  = '';
 
+  if ( !has_post_thumbnail( $post->ID ) ) {
+    $output .= '<img width="150" height="150" src="' . RENTAL_PLUGIN_URL . '/nophoto.png" class="attachment-thumbnail wp-post-image" alt="No Photo" title="' . $address . '">';
+  }
+
   if ( $custom['available'] ) {
     $output .= "<div class='availability burst-8 " . preg_replace('/\-{2}+/','',preg_replace('/[^A-Za-z0-9]/','-',strtolower(strip_tags($custom['available'])))) . "'>" . ucwords($custom['available']) . "</div>";
   }
