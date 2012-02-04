@@ -352,6 +352,7 @@ function rental_excerpt_filter($content) {
 
   $output .= "<ul class='meta'>";
   if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
+  $output .= "  <li>{$custom['home_size']} Square Foot, {$custom['bedrooms']} Bedrooms, {$custom['bathrooms']} Bathrooms</li>";
   $output .= "</ul>";
 
   $output .= "<p class='excerpt'>";
