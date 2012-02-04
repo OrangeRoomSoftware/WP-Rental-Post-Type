@@ -343,7 +343,7 @@ function rental_excerpt_filter($content) {
   $output  = '';
 
   if ( !has_post_thumbnail( $post->ID ) ) {
-    $output .= '<img width="150" height="150" src="' . RENTAL_PLUGIN_URL . '/nophoto.png" class="attachment-thumbnail wp-post-image" alt="No Photo" title="' . $address . '">';
+    $output .= '<a href="' . get_permalink() . '"><img width="150" height="150" src="' . RENTAL_PLUGIN_URL . '/nophoto.png" class="attachment-thumbnail wp-post-image" alt="No Photo" title="' . $address . '"></a>';
   }
 
   if ( $custom['available'] ) {
