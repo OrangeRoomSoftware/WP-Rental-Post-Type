@@ -342,7 +342,7 @@ function ors_rental_search_box() {
   if ( get_post_type() != 'rental' ) return;
 
   if ( is_single() ) {
-    print '<a class="back-button" href="' . $_SERVER['HTTP_REFERER'] . '">⬅ Back to Listings</a>';
+    print '<a class="back-button" href="' . $_SERVER['HTTP_REFERER'] . '">◄ Back to Listings</a>';
     return;
   }
 
