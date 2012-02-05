@@ -297,18 +297,88 @@ function rental_custom_columns($column){
 if ( !is_admin() ) add_filter( 'posts_clauses', 'ors_rental_query' );
 function ors_rental_query($clauses) {
   if ( !strstr($clauses['where'], 'rental') ) return $clauses;
-  global $wpdb;
-  $clauses['join'] .= " JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id ";
-  $clauses['where'] .= " and {$wpdb->postmeta}.meta_key = 'price'";
-  $clauses['fields'] .= ", {$wpdb->postmeta}.meta_value as price";
-  $clauses['orderby'] = 'CAST(price as decimal) ASC';
+
+  global $wpdb, $ors_rental_cookies;
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'price') as decimal) as price";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'home_size') as decimal) as home_size";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'bedrooms') as decimal) as bedrooms";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'bathrooms') as decimal) as bathrooms";
+  $clauses['having'] = array();
+  $clauses['orderby'] = '';
+
+  if ( isset($ors_rental_cookies['text_search']) and $ors_rental_cookies['text_search'] != '' ) {
+    $clauses['where'] .= " and ({$wpdb->posts}.post_title like '%{$ors_rental_cookies['text_search']}%'";
+    $clauses['where'] .= " or {$wpdb->posts}.post_content like '%{$ors_rental_cookies['text_search']}%')";
+  }
+
+  $search_params = array('bedrooms', 'bathrooms');
+  foreach ($search_params as $param) {
+    if ( isset($ors_rental_cookies[$param]) and $ors_rental_cookies[$param] != '' ) {
+      $clauses['having'][] = "$param = '$ors_rental_cookies[$param]'";
+    }
+  }
+  if ( !empty($clauses['having']) ) {
+    $clauses['where'] .= ' HAVING ' . implode(' and ', $clauses['having']);
+  }
+
+  $order_params = array('price' => 'price_near', 'home_size' => 'size_near');
+  foreach ($order_params as $field => $param) {
+    if ( isset($ors_rental_cookies[$param]) and $ors_rental_cookies[$param] != '' ) {
+      $clauses['orderby'] .= ", ABS({$ors_rental_cookies[$param]} - $field)";
+    }
+  }
+  if ( $clauses['orderby'] == '' ) $clauses['orderby'] = 'price ASC';
+  else $clauses['orderby'] = substr($clauses['orderby'], 2);
+
+  // print "<pre>" . print_r($clauses, 1) . "</pre>";
   return $clauses;
 }
 
 /*
+ * Search Box
+*/
+add_filter( 'loop_start', 'ors_rental_search_box' );
+function ors_rental_search_box() {
+  global $ors_rental_cookies;
+  ?>
+  <div id='ors-rental-search-box'>
+    <form method="POST">
+      Price Near <input type="text" name="price_near" size=4 value="<?php echo $ors_rental_cookies['price_near'] ?>">
+      Size Near <input type="text" name="size_near" size=4 value="<?php echo $ors_rental_cookies['size_near'] ?>">
+      Bedrooms <input type="text" name="bedrooms" size=2 value="<?php echo $ors_rental_cookies['bedrooms'] ?>">
+      Bathrooms <input type="text" name="bathrooms" size=2 value="<?php echo $ors_rental_cookies['bathrooms'] ?>">
+      Text <input type="text" name="text_search" size=30 value="<?php echo $ors_rental_cookies['text_search'] ?>">
+      <input type="hidden" name="post_type" value="rental">
+      <input type="submit" name="submit" value="Search">
+      <input type="submit" name="clear" value="Clear">
+    </form>
+  </div>
+  <?php
+}
+
+function ors_rental_set_cookies() {
+  global $ors_rental_cookies;
+  $search_params = array('price_near', 'size_near', 'bedrooms', 'bathrooms', 'text_search');
+
+  foreach ($search_params as $param) {
+    if ( isset($_POST[$param]) ) {
+      if ( $_POST['clear'] == 'Clear' ) $_POST[$param] = '';
+      $ors_rental_cookies[$param] = $_POST[$param];
+      setcookie($param, $_POST[$param], time() + 3600, COOKIEPATH, COOKIE_DOMAIN, false);
+    }
+
+    elseif ( isset($_COOKIE[$param]) ) {
+      $ors_rental_cookies[$param] = $_COOKIE[$param];
+    }
+  }
+}
+add_action( 'init', 'ors_rental_set_cookies');
+
+
+/*
  * Fix the content
 */
-add_filter('the_title', 'rental_title_filter');
+add_filter( 'the_title', 'rental_title_filter' );
 function rental_title_filter($content) {
   if ( !in_the_loop() or get_post_type() != 'rental' ) return $content;
 
@@ -382,6 +452,10 @@ function rental_content_filter($content) {
   if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
   $output .= "  <li>" . $custom['bedrooms'] . ' Bedrooms ';
   $output .= "  " . $custom['bathrooms'] . ' Bath</li>';
+  if ( $custom['home_size'] )
+    $output .= "  <li>{$custom['home_size']} Square Foot {$custom['property_type']}</li>";
+  if ( $custom['lot_size'] )
+    $output .= "  <li>{$custom['lot_size']} Square Foot Lot</li>";
   $output .= "</ul>";
 
   if ( is_array($features) and !empty($features[0]) ) {
