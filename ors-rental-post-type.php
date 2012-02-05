@@ -340,10 +340,16 @@ function ors_rental_query($clauses) {
 add_filter( 'loop_start', 'ors_rental_search_box' );
 function ors_rental_search_box() {
   if ( get_post_type() != 'rental' ) return;
+
+  if ( is_single() ) {
+    print '<a class="back-button" href="' . $_SERVER['HTTP_REFERER'] . '">⬅ Back to Listings</a>';
+    return;
+  }
+
   global $ors_rental_cookies;
   ?>
   <div id='ors-rental-search-box'>
-    <form method="POST">
+    <form action="/rentals/" method="POST">
       Price Near <input type="text" name="price_near" size=4 value="<?php echo $ors_rental_cookies['price_near'] ?>">
       Size Near <input type="text" name="size_near" size=4 value="<?php echo $ors_rental_cookies['size_near'] ?>">
       Bedrooms <input type="text" name="bedrooms" size=2 value="<?php echo $ors_rental_cookies['bedrooms'] ?>">
