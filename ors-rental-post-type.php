@@ -350,11 +350,11 @@ function ors_rental_search_box() {
   ?>
   <div id='ors-rental-search-box'>
     <form action="/rentals/" method="POST">
-      Price Near <input type="text" name="price_near" size=4 value="<?php echo $ors_rental_cookies['price_near'] ?>">
-      Size Near <input type="text" name="size_near" size=4 value="<?php echo $ors_rental_cookies['size_near'] ?>">
-      Bedrooms <input type="text" name="bedrooms" size=2 value="<?php echo $ors_rental_cookies['bedrooms'] ?>">
-      Bathrooms <input type="text" name="bathrooms" size=2 value="<?php echo $ors_rental_cookies['bathrooms'] ?>">
-      Text <input type="text" name="text_search" size=30 value="<?php echo $ors_rental_cookies['text_search'] ?>">
+      Price Near <input id="price_near" type="text" name="price_near" size=4 value="<?php echo $ors_rental_cookies['price_near'] ?>">
+      Size Near <input id="size_near" type="text" name="size_near" size=4 value="<?php echo $ors_rental_cookies['size_near'] ?>">
+      Bedrooms <input id="bedrooms" type="text" name="bedrooms" size=2 value="<?php echo $ors_rental_cookies['bedrooms'] ?>">
+      Bathrooms <input id="bathrooms" type="text" name="bathrooms" size=2 value="<?php echo $ors_rental_cookies['bathrooms'] ?>">
+      Text <input id="text_search" type="text" name="text_search" size=30 value="<?php echo $ors_rental_cookies['text_search'] ?>">
       <input type="hidden" name="post_type" value="rental">
       <input type="submit" name="submit" value="Search">
       <input type="submit" name="clear" value="Clear">
