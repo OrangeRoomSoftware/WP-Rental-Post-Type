@@ -339,6 +339,7 @@ function ors_rental_query($clauses) {
 */
 add_filter( 'loop_start', 'ors_rental_search_box' );
 function ors_rental_search_box() {
+  if ( get_post_type() != 'rental' ) return;
   global $ors_rental_cookies;
   ?>
   <div id='ors-rental-search-box'>
