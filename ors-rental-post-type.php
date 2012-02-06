@@ -34,7 +34,7 @@ function ors_rental_template_stylesheets() {
 # Admin Stylesheet
 add_action('admin_print_styles', 'ors_admin_stylesheets', 6);
 function ors_admin_stylesheets() {
-  wp_enqueue_style('rental-admin-style', RENTAL_PLUGIN_URL . "/admin-style.css", 'ors-admin', null, 'all');
+  wp_enqueue_style('rental-admin-style', RENTAL_PLUGIN_URL . "/admin-style.css", 'ors-rental-admin', null, 'all');
 }
 
 # Admin Javascript
@@ -270,7 +270,7 @@ function rental_custom_columns($column){
       }
       break;
     case "price":
-      echo '$' . $custom["price"][0];
+      echo '$' . number_format($custom["price"][0]);
       break;
     case "available":
       echo $custom["available"][0];
@@ -397,7 +397,7 @@ function rental_title_filter($content) {
 
   $output = '';
 
-  $output .= '<span class="price">$' . $custom['price'] . '/mo</span>';
+  $output .= '<span class="price">$' . number_format($custom['price']) . '/mo</span>';
   if ( $visible ) $output .= '<span class="title">' . $content . '</span>';
   else $output .= '<span class="title">Coming Soon</span>';
   $output .= '<span class="property-type">' . $custom['property_type'] . '</span>';
@@ -454,7 +454,7 @@ function rental_content_filter($content) {
   $features = array_filter(explode('|', $custom['features']), 'strlen');
   $options = array_filter(explode('|', $custom['options']), 'strlen');
 
-  $output  = "[slideshow]<br/>" . $content;
+  $output  = get_option('ors-rental-gallery-shortcode') . '<br/>';
   $output .= "<ul class='meta'>";
   if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
   $output .= "  <li>" . $custom['bedrooms'] . ' Bedrooms ';
@@ -485,14 +485,14 @@ function rental_content_filter($content) {
     $output .= '</ul></div>';
   }
 
-  if ( $inquiry = get_option('ors-inquiry-form') ) {
+  if ( $inquiry = get_option('ors-rental-inquiry-form') ) {
     $output .= '<div class="inquiry-form">';
     $output .= '<h2>Send Email Inquiry</h2>';
     $output .= $inquiry;
     $output .= '</div>';
   }
 
-  if ( $tell_a_friend = get_option('ors-tell-a-friend-form') ) {
+  if ( $tell_a_friend = get_option('ors-rental-tell-a-friend-form') ) {
     $output .= '<div class="inquiry-form">';
     $output .= '<h2>Tell-A-Friend</h2>';
     $output .= $tell_a_friend;
