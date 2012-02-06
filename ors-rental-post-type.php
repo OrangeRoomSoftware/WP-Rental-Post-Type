@@ -455,6 +455,7 @@ function rental_content_filter($content) {
   $options = array_filter(explode('|', $custom['options']), 'strlen');
 
   $output  = get_option('ors-rental-gallery-shortcode') . '<br/>';
+  $output .= $content;
   $output .= "<ul class='meta'>";
   if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
   $output .= "  <li>" . $custom['bedrooms'] . ' Bedrooms ';
