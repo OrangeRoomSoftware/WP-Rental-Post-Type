@@ -429,9 +429,18 @@ function rental_excerpt_filter($content) {
 
   $output .= "<ul class='meta'>";
   if ( $visible ) $output .= "  <li>Address: " . $address . '</li>';
-  $output .= "  <li>{$custom['home_size']} Square Foot, {$custom['bedrooms']} Bedrooms, {$custom['bathrooms']} Bathrooms</li>";
-  $output .= "</ul>";
 
+  $stats = array();
+  if ( $custom['home_size'] )
+    $stats[] = "{$custom['home_size']} Square Foot";
+  if ( $custom['bedrooms'] )
+    $stats[] = "{$custom['bedrooms']} Bedrooms";
+  if ( $custom['bathrooms'] )
+    $stats[] = "{$custom['bathrooms']} Bathrooms";
+  if ( count($stats) >= 1 )
+    $output .= "  <li>" . implode(", ", $stats) . "</li>";
+
+  $output .= "</ul>";
   $output .= "<p class='excerpt'>";
   $output .= "  " . $content;
   $output .= "</p>";
