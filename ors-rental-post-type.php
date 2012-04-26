@@ -16,7 +16,7 @@ define('RENTAL_PLUGIN_DIR', dirname(__FILE__));
 require_once ( RENTAL_PLUGIN_DIR . '/plugin-options.php' );
 
 # Post Thumbnails
-add_theme_support( ‘post-thumbnails’ );
+add_theme_support( 'post-thumbnails' );
 
 /*
  * Add shortcodes to the widgets and excerpt
@@ -32,8 +32,8 @@ function ors_rental_template_stylesheets() {
 }
 
 # Admin Stylesheet
-add_action('admin_print_styles', 'ors_admin_stylesheets', 6);
-function ors_admin_stylesheets() {
+add_action('admin_print_styles', 'ors_rental_admin_stylesheets', 6);
+function ors_rental_admin_stylesheets() {
   wp_enqueue_style('rental-admin-style', RENTAL_PLUGIN_URL . "/admin-style.css", 'ors-rental-admin', null, 'all');
 }
 
@@ -208,6 +208,8 @@ function custom_rental_meta_boxes() {
 
 add_action( 'save_post', 'save_rental_postdata' );
 function save_rental_postdata( $post_id ) {
+  if ( get_post_type() != 'rental' ) return;
+
   if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
     return;
 
@@ -262,6 +264,7 @@ add_action("manage_posts_custom_column",  "rental_custom_columns");
 function rental_custom_columns($column){
   global $post;
   $custom = get_post_custom();
+  if ( get_post_type() != 'rental' ) return;
 
   switch ($column) {
     case "thumbnail":
@@ -296,13 +299,13 @@ function rental_custom_columns($column){
 */
 if ( !is_admin() ) add_filter( 'posts_clauses', 'ors_rental_query' );
 function ors_rental_query($clauses) {
-  if ( !strstr($clauses['where'], 'rental') ) return $clauses;
+  if ( !strstr($clauses['where'], 'rental') or is_single() ) return $clauses;
 
   global $wpdb, $ors_rental_cookies;
-  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'price') as decimal) as price";
-  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'home_size') as decimal) as home_size";
-  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'bedrooms') as decimal) as bedrooms";
-  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'bathrooms') as decimal) as bathrooms";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'price' order by meta_id desc limit 1) as decimal) as price";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'home_size' order by meta_id desc limit 1) as decimal) as home_size";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'bedrooms' order by meta_id desc limit 1) as decimal) as bedrooms";
+  $clauses['fields'] .= ", CAST((select {$wpdb->postmeta}.meta_value from {$wpdb->postmeta} where {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID and {$wpdb->postmeta}.meta_key = 'bathrooms' order by meta_id desc limit 1) as decimal) as bathrooms";
   $clauses['having'] = array();
   $clauses['orderby'] = '';
 
@@ -500,6 +503,7 @@ function rental_content_filter($content) {
     $output .= '<h2>Send Email Inquiry</h2>';
     $output .= $inquiry;
     $output .= '</div>';
+    $output .= '<script type="text/javascript" charset="utf-8">jQuery(function() { jQuery(".inquiry-form form input[name*=subject]").val("'."Rental Inquiry for {$address}".'"); });</script>';
   }
 
   if ( $tell_a_friend = get_option('ors-rental-tell-a-friend-form') ) {
