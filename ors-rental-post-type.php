@@ -368,13 +368,23 @@ function ors_rental_search_box() {
 
 function ors_rental_set_cookies() {
   global $ors_rental_cookies;
-  $search_params = array('price_near', 'size_near', 'bedrooms', 'bathrooms', 'text_search');
+  $search_params = array(
+    'price_near',
+    'size_near',
+    'bedrooms',
+    'bathrooms',
+    'text_search'
+  );
 
   foreach ($search_params as $param) {
     if ( isset($_POST[$param]) ) {
       if ( $_POST['clear'] == 'Clear' ) $_POST[$param] = '';
       $ors_rental_cookies[$param] = $_POST[$param];
-      setcookie($param, $_POST[$param], time() + 3600, COOKIEPATH, COOKIE_DOMAIN, false);
+      setcookie(
+        $param,
+        $_POST[$param],
+        time() + 3600, COOKIEPATH, COOKIE_DOMAIN, false
+      );
     }
 
     elseif ( isset($_COOKIE[$param]) ) {
@@ -384,6 +394,27 @@ function ors_rental_set_cookies() {
 }
 add_action( 'init', 'ors_rental_set_cookies');
 
+/*
+ * Fix 404 pages
+ */
+function ors_rental_404_fix() {
+  global $ors_rental_search;
+  $search_params = array(
+    'price_near',
+    'size_near',
+    'bedrooms',
+    'bathrooms',
+    'text_search'
+  );
+  foreach ($search_params as $param) {
+    setcookie(
+      $param,
+      '',
+      time() + 3600, COOKIEPATH, COOKIE_DOMAIN, false
+    );
+  }
+}
+add_action( 'template_redirect', 'ors_vehicle_404_fix', 0 );
 
 /*
  * Fix the content
