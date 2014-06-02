@@ -414,7 +414,7 @@ function ors_rental_404_fix() {
     );
   }
 }
-add_action( 'template_redirect', 'ors_vehicle_404_fix', 0 );
+add_action( 'template_redirect', 'ors_rental_404_fix', 0 );
 
 /*
  * Fix the content
