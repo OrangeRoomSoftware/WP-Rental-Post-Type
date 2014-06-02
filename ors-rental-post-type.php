@@ -47,7 +47,7 @@ function ors_rental_plugin_admin_script() {
 /*
  * First time activation
 */
-register_activation_hook( __FILE__, 'activate_vehicle_post_type' );
+register_activation_hook( __FILE__, 'activate_rental_post_type' );
 function activate_rental_post_type() {
   create_rental_post_type();
   flush_rewrite_rules();
@@ -364,6 +364,11 @@ function ors_rental_search_box() {
     </form>
   </div>
   <?php
+  if ($_GET['nf'] == 1) {
+    ?>
+    <div class="not-found">No rentals found. Your search was reset.</div>
+    <?php
+  }
 }
 
 function ors_rental_set_cookies() {
@@ -394,27 +399,37 @@ function ors_rental_set_cookies() {
 }
 add_action( 'init', 'ors_rental_set_cookies');
 
+function get_current_url() {
+  return $_SERVER["REQUEST_URI"];
+}
+
 /*
  * Fix 404 pages
  */
+add_action( 'template_redirect', 'ors_rental_404_fix', 0 );
 function ors_rental_404_fix() {
   global $ors_rental_search;
-  $search_params = array(
-    'price_near',
-    'size_near',
-    'bedrooms',
-    'bathrooms',
-    'text_search'
-  );
-  foreach ($search_params as $param) {
-    setcookie(
-      $param,
-      '',
-      time() + 3600, COOKIEPATH, COOKIE_DOMAIN, false
+
+  if ( !have_posts() && strstr(get_current_url(), 'rentals') ) {
+    $search_params = array(
+      'price_near',
+      'size_near',
+      'bedrooms',
+      'bathrooms',
+      'text_search'
     );
+
+    foreach ($search_params as $param) {
+      setcookie(
+        $param,
+        null, -1, COOKIEPATH, COOKIE_DOMAIN, false
+      );
+    }
+
+    wp_redirect( "/rentals/?nf=1" );
+    exit;
   }
 }
-add_action( 'template_redirect', 'ors_rental_404_fix', 0 );
 
 /*
  * Fix the content
