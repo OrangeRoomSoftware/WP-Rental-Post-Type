@@ -399,8 +399,13 @@ function ors_rental_set_cookies() {
 }
 add_action( 'init', 'ors_rental_set_cookies');
 
-function get_current_url() {
-  return $_SERVER["REQUEST_URI"];
+/*
+ * Get the current URL
+ */
+if ( !function_exists( 'get_current_url' ) ) {
+  function get_current_url() {
+    return $_SERVER["REQUEST_URI"];
+  }
 }
 
 /*
